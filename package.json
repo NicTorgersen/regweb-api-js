@@ -1,0 +1,69 @@
+{
+    "name": "regweb-api-js",
+    "version": "1.0.0",
+    "description": "JavaScript SDK for the Regweb member management API",
+    "type": "module",
+    "main": "dist/index.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "scripts": {
+        "build": "bun run rollup -c",
+        "dev": "bun run rollup -c -w",
+        "test": "bun test",
+        "test:watch": "bun test --watch",
+        "test:jest": "jest",
+        "lint": "bun run eslint src tests examples",
+        "lint:fix": "bun run eslint src tests examples --fix",
+        "type-check": "bun run tsc --noEmit",
+        "demo": "bun examples/interactive-demo.mjs",
+        "prepublishOnly": "bun run build",
+        "install:bun": "bun install",
+        "clean": "rm -rf dist node_modules/.cache"
+    },
+    "keywords": [
+        "regweb",
+        "api",
+        "sdk",
+        "member-management",
+        "oauth2",
+        "rest"
+    ],
+    "author": "Coretrek AS",
+    "license": "MIT",
+    "devDependencies": {
+        "@eslint/js": "^9.33.0",
+        "@rollup/plugin-commonjs": "^25.0.8",
+        "@rollup/plugin-node-resolve": "^15.3.1",
+        "@rollup/plugin-typescript": "^11.1.6",
+        "@types/jest": "^29.5.14",
+        "@types/node": "^20.19.11",
+        "@typescript-eslint/eslint-plugin": "^8.40.0",
+        "@typescript-eslint/parser": "^8.40.0",
+        "eslint": "^9.33.0",
+        "jest": "^29.7.0",
+        "rollup": "^3.29.5",
+        "ts-jest": "^29.4.1",
+        "tslib": "^2.8.1",
+        "typescript": "^5.9.2",
+        "typescript-eslint": "^8.18.1"
+    },
+    "dependencies": {
+        "axios": "^1.11.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/regweb/regweb-api-js.git"
+    },
+    "bugs": {
+        "url": "https://github.com/regweb/regweb-api-js/issues"
+    },
+    "homepage": "https://github.com/regweb/regweb-api-js#readme",
+    "engines": {
+        "bun": ">=1.0.0"
+    },
+    "packageManager": "bun@1.3.4"
+}
