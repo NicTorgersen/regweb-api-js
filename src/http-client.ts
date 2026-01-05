@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiResponse, RequestOptions, ApiError } from './types';
+import { PACKAGE_NAME, PACKAGE_VERSION } from './version';
 
 /**
  * Custom error class for API errors
@@ -31,6 +32,7 @@ export class HttpClient {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json',
+                'User-Agent': `${PACKAGE_NAME}/${PACKAGE_VERSION}`,
             },
         });
 

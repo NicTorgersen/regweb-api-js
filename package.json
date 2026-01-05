@@ -1,5 +1,5 @@
 {
-    "name": "regweb-api-js",
+    "name": "@unnamed-nic/regweb-api-js",
     "version": "1.0.0",
     "description": "JavaScript SDK for the Regweb member management API",
     "type": "module",
@@ -56,12 +56,15 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/regweb/regweb-api-js.git"
+        "url": "git+https://github.com/unnamed-nic/regweb-api-js.git"
     },
     "bugs": {
-        "url": "https://github.com/regweb/regweb-api-js/issues"
+        "url": "https://github.com/unnamed-nic/regweb-api-js/issues"
     },
-    "homepage": "https://github.com/regweb/regweb-api-js#readme",
+    "homepage": "https://github.com/unnamed-nic/regweb-api-js#readme",
+    "publishConfig": {
+        "access": "public"
+    },
     "engines": {
         "bun": ">=1.0.0"
     },
