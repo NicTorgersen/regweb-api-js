@@ -1,0 +1,15 @@
+{
+    "name": "pef-regweb-wrapper",
+    "version": "1.0.0",
+    "description": "Wrapper for the RegWeb login API",
+    "main": "index.ts",
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@unnamed-nic/regweb-api-js": "^1.0.0"
+    }
+}
