@@ -46,7 +46,7 @@ export class AuthManager {
         }
 
         const authRequest: AuthRequest = {
-            grant_type: 'refresh',
+            grant_type: 'refresh_token',
             client_id: this.clientId,
             client_secret: this.clientSecret,
             refresh_token: this.refreshToken,

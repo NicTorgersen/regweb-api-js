@@ -12,7 +12,7 @@ export interface RegwebApiConfig {
  * OAuth2 authentication request
  */
 export interface AuthRequest {
-    grant_type: 'password' | 'refresh';
+    grant_type: 'password' | 'refresh_token';
     client_id: string;
     client_secret: string;
     username?: string;
