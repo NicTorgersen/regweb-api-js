@@ -3,6 +3,7 @@ main = "index.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
+[env.production]
 # Set secrets via CLI:
 #   wrangler secret put REGWEB_BASE_URL
 #   wrangler secret put REGWEB_CLIENT_ID
