@@ -6,11 +6,9 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 API_KEYS = "your api keys here"
 REGWEB_BASE_URL = "https://namespace.regweb.no"
-# Set secrets via CLI:
-#   wrangler secret put REGWEB_BASE_URL
+# Set the actual secrets via CLI:
 #   wrangler secret put REGWEB_CLIENT_ID
 #   wrangler secret put REGWEB_CLIENT_SECRET
-#   wrangler secret put API_KEYS
 
 [observability]
 enabled = false
