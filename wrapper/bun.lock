@@ -5,12 +5,12 @@
     "": {
       "name": "pef-regweb-wrapper",
       "dependencies": {
-        "@unnamed-nic/regweb-api-js": "^1.0.0",
+        "@unnamed-nic/regweb-api-js": "^1.1.1",
       },
     },
   },
   "packages": {
-    "@unnamed-nic/regweb-api-js": ["@unnamed-nic/regweb-api-js@1.0.0", "", { "dependencies": { "axios": "^1.11.0" } }, "sha512-LWW/B0aTAIz49RM73bosnZL9SvJl9j2ZSyP4RGEeNGaDxbYQEZbM4BPsszlF08+tZtosW9nBZt9G8tgvP+f7mQ=="],
+    "@unnamed-nic/regweb-api-js": ["@unnamed-nic/regweb-api-js@1.1.1", "", { "dependencies": { "axios": "^1.11.0" } }, "sha512-4IELl79IQdOsHxdDPoSJlQjl/w/L8808f+1SU1vHhOSdDymABelxgb6s9Eri84nehgFp9g/cH4b5zTLb+uSv1g=="],
 
     "asynckit": ["asynckit@0.4.0", "", {}, "sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q=="],
 

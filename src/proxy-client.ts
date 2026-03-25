@@ -10,6 +10,10 @@
  * - Automatic token management
  * - Works with Expo, React Native, and web
  *
+ * Token lifetimes:
+ * - Access token: varies (typically 1 hour), returned in `expires_in`
+ * - Refresh token: 14 days (1209600 seconds) from issuance
+ *
  * @example
  * ```typescript
  * const client = new RegwebProxyClient({
@@ -21,6 +25,9 @@
  * const user = await client.getUser();
  * ```
  */
+
+/** Refresh token validity period: 14 days (1209600 seconds) */
+const REFRESH_TOKEN_LIFETIME_MS = 1209600 * 1000;
 
 export interface ProxyClientConfig {
     /** URL of the deployed proxy (e.g., https://your-worker.workers.dev) */
@@ -60,7 +67,10 @@ export interface Member {
 export interface Tokens {
     accessToken: string;
     refreshToken: string;
+    /** Access token expiry (ISO string) */
     expiresAt: string;
+    /** Refresh token expiry (ISO string) - 14 days from issuance */
+    refreshTokenExpiresAt: string;
 }
 
 export class RegwebProxyClient {
@@ -105,21 +115,33 @@ export class RegwebProxyClient {
     /** Authenticate with username and password */
     async login(username: string, password: string): Promise<AuthResult> {
         const result = await this.request<AuthResult>('login', { username, password });
+        const refreshTokenExpiresAt = new Date(Date.now() + REFRESH_TOKEN_LIFETIME_MS).toISOString();
         this.tokens = {
             accessToken: result.access_token,
             refreshToken: result.refresh_token,
             expiresAt: result.expiresAt,
+            refreshTokenExpiresAt,
         };
         return result;
     }
 
     /** Refresh the access token using the stored refresh token */
     async refreshToken(): Promise<AuthResult> {
+        const oldRefreshToken = this.tokens?.refreshToken;
+        const oldRefreshTokenExpiresAt = this.tokens?.refreshTokenExpiresAt;
         const result = await this.request<AuthResult>('refreshToken');
+
+        // If server returns a new refresh token, calculate new expiry; otherwise preserve old
+        const gotNewRefreshToken = result.refresh_token && result.refresh_token !== oldRefreshToken;
+        const refreshTokenExpiresAt = gotNewRefreshToken
+            ? new Date(Date.now() + REFRESH_TOKEN_LIFETIME_MS).toISOString()
+            : (oldRefreshTokenExpiresAt || new Date(Date.now() + REFRESH_TOKEN_LIFETIME_MS).toISOString());
+
         this.tokens = {
             accessToken: result.access_token,
-            refreshToken: result.refresh_token,
+            refreshToken: result.refresh_token || oldRefreshToken || '',
             expiresAt: result.expiresAt,
+            refreshTokenExpiresAt,
         };
         return result;
     }
@@ -149,10 +171,16 @@ export class RegwebProxyClient {
         this.tokens = null;
     }
 
-    /** Check if the user has valid tokens */
+    /** Check if the user has a valid (non-expired) access token */
     isLoggedIn(): boolean {
         if (!this.tokens) return false;
         return new Date(this.tokens.expiresAt) > new Date();
+    }
+
+    /** Check if the refresh token is expired (14 day lifetime) */
+    isRefreshTokenExpired(): boolean {
+        if (!this.tokens?.refreshTokenExpiresAt) return true;
+        return new Date(this.tokens.refreshTokenExpiresAt) <= new Date();
     }
 
     /** Get the current tokens (for persistence) */

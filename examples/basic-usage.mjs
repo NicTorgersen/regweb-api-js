@@ -1,18 +1,22 @@
-import { RegwebApi } from 'regweb-api-js';
+import { RegwebApi } from '../src/index.js';
 
 async function basicExample() {
     // Initialize the API client
     const api = new RegwebApi({
-        baseUrl: 'https://your-regweb-instance.com',
-        clientId: 'your-client-id',
-        clientSecret: 'your-client-secret',
+        baseUrl: 'https://<your-instance>.regweb.no', // set this to your instance
+        clientId: '<your-client-id>', // set this to your client id
+        clientSecret: '<your-client-secret>', // set this to your client secret
     });
 
     try {
     // Authenticate
         console.log('Logging in...');
-        await api.login('username', 'password');
+        await api.login('<username>', '<password>'); // set this to your username and password
         console.log('✅ Logged in successfully!');
+
+        // Response from refresh token
+        const refreshResponse = await api.refreshToken();
+        console.log('Refresh token response:', refreshResponse);
 
         // Get current user
         console.log('\nFetching user data...');
@@ -36,19 +40,19 @@ async function basicExample() {
             console.log('👥 Member data:', member.firstname, member.lastname);
         }
 
-        // Update member data
-        if (user.is_member && user.member) {
-            console.log('\nUpdating member data...');
-            const updateResult = await api.updateMember(user.member.id, {
-                optional_textfield1: 'Updated via API at ' + new Date().toISOString(),
-            });
-      
-            if (updateResult.success) {
-                console.log('✅ Member updated successfully!');
-            } else {
-                console.log('❌ Update failed:', updateResult.errors);
-            }
-        }
+        // Update member data (uncomment if you want to try)
+        // if (user.is_member && user.member) {
+        //     console.log('\nUpdating member data...');
+        //     const updateResult = await api.updateMember(user.member.id, {
+        //         optional_textfield1: 'Updated via API at ' + new Date().toISOString(),
+        //     });
+        //
+        //     if (updateResult.success) {
+        //         console.log('✅ Member updated successfully!');
+        //     } else {
+        //         console.log('❌ Update failed:', updateResult.errors);
+        //     }
+        // }
 
         // Get optional select values
         console.log('\nFetching optional select values...');

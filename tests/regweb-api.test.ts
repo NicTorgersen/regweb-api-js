@@ -1,5 +1,6 @@
 import { RegwebApi } from '../src/regweb-api';
 import { RegwebApiConfig } from '../src/types';
+import { RegwebProxyClient } from '../src/proxy-client';
 
 describe('RegwebApi', () => {
     let api: RegwebApi;
@@ -124,6 +125,121 @@ describe('RegwebApi', () => {
                 email: 'john@example.com',
             });
             expect(result).not.toHaveProperty('lastname');
+        });
+    });
+
+    describe('session management', () => {
+        it('should restore session and preserve tokens', () => {
+            const accessToken = 'test-access-token';
+            const refreshToken = 'test-refresh-token';
+            const expiresAt = new Date(Date.now() + 3600000); // 1 hour from now
+
+            api.restoreSession(accessToken, refreshToken, expiresAt);
+
+            const tokenInfo = api.getTokenInfo();
+            expect(tokenInfo.accessToken).toBe(accessToken);
+            expect(tokenInfo.refreshToken).toBe(refreshToken);
+            expect(tokenInfo.expiresAt).toEqual(expiresAt);
+            expect(api.isLoggedIn()).toBe(true);
+        });
+
+        it('should report not logged in with expired token', () => {
+            const accessToken = 'test-access-token';
+            const refreshToken = 'test-refresh-token';
+            const expiresAt = new Date(Date.now() - 1000); // Already expired
+
+            api.restoreSession(accessToken, refreshToken, expiresAt);
+
+            expect(api.isLoggedIn()).toBe(false);
+        });
+
+        it('should clear tokens on logout', () => {
+            api.restoreSession('token', 'refresh', new Date(Date.now() + 3600000));
+            expect(api.isLoggedIn()).toBe(true);
+
+            api.logout();
+
+            const tokenInfo = api.getTokenInfo();
+            expect(tokenInfo.accessToken).toBeNull();
+            expect(tokenInfo.refreshToken).toBeNull();
+            expect(api.isLoggedIn()).toBe(false);
+        });
+    });
+});
+
+describe('RegwebProxyClient', () => {
+    let client: RegwebProxyClient;
+
+    beforeEach(() => {
+        client = new RegwebProxyClient({
+            proxyUrl: 'https://proxy.example.com',
+            apiKey: 'test-api-key',
+        });
+    });
+
+    describe('token management', () => {
+        it('should start with no tokens', () => {
+            expect(client.getTokens()).toBeNull();
+            expect(client.isLoggedIn()).toBe(false);
+            expect(client.isRefreshTokenExpired()).toBe(true);
+        });
+
+        it('should store and retrieve tokens', () => {
+            const tokens = {
+                accessToken: 'access-123',
+                refreshToken: 'refresh-456',
+                expiresAt: new Date(Date.now() + 3600000).toISOString(),
+                refreshTokenExpiresAt: new Date(Date.now() + 1209600000).toISOString(), // 14 days
+            };
+
+            client.setTokens(tokens);
+
+            expect(client.getTokens()).toEqual(tokens);
+            expect(client.isLoggedIn()).toBe(true);
+            expect(client.isRefreshTokenExpired()).toBe(false);
+        });
+
+        it('should report not logged in with expired access token', () => {
+            const tokens = {
+                accessToken: 'access-123',
+                refreshToken: 'refresh-456',
+                expiresAt: new Date(Date.now() - 1000).toISOString(), // Expired
+                refreshTokenExpiresAt: new Date(Date.now() + 1209600000).toISOString(),
+            };
+
+            client.setTokens(tokens);
+
+            expect(client.isLoggedIn()).toBe(false);
+            expect(client.isRefreshTokenExpired()).toBe(false); // Refresh token still valid
+        });
+
+        it('should report refresh token expired after 14 days', () => {
+            const tokens = {
+                accessToken: 'access-123',
+                refreshToken: 'refresh-456',
+                expiresAt: new Date(Date.now() + 3600000).toISOString(),
+                refreshTokenExpiresAt: new Date(Date.now() - 1000).toISOString(), // Expired
+            };
+
+            client.setTokens(tokens);
+
+            expect(client.isLoggedIn()).toBe(true); // Access token still valid
+            expect(client.isRefreshTokenExpired()).toBe(true); // But refresh token expired
+        });
+
+        it('should clear tokens on logout', () => {
+            client.setTokens({
+                accessToken: 'access-123',
+                refreshToken: 'refresh-456',
+                expiresAt: new Date(Date.now() + 3600000).toISOString(),
+                refreshTokenExpiresAt: new Date(Date.now() + 1209600000).toISOString(),
+            });
+
+            client.logout();
+
+            expect(client.getTokens()).toBeNull();
+            expect(client.isLoggedIn()).toBe(false);
+            expect(client.isRefreshTokenExpired()).toBe(true);
         });
     });
 });

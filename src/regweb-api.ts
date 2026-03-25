@@ -133,17 +133,39 @@ export class RegwebApi {
     }
 
     /**
-   * Get current authentication token information
-   */
-    getTokenInfo(): { accessToken: string | null; refreshToken: string | null; expiresAt: Date | null } {
+     * Get current authentication token information
+     */
+    getTokenInfo(): {
+        accessToken: string | null;
+        refreshToken: string | null;
+        expiresAt: Date | null;
+        refreshTokenExpiresAt: Date | null;
+        } {
         return this.authManager.getTokenInfo();
     }
 
     /**
-   * Restore authentication session
-   */
-    restoreSession(accessToken: string, refreshToken: string, expiresAt: Date): void {
-        this.authManager.restoreTokens(accessToken, refreshToken, expiresAt);
+     * Check if the refresh token is expired (14 day lifetime)
+     */
+    isRefreshTokenExpired(): boolean {
+        return this.authManager.isRefreshTokenExpired();
+    }
+
+    /**
+     * Restore authentication session
+     *
+     * @param accessToken - The access token
+     * @param refreshToken - The refresh token
+     * @param expiresAt - Access token expiry date
+     * @param refreshTokenExpiresAt - Refresh token expiry date (optional)
+     */
+    restoreSession(
+        accessToken: string,
+        refreshToken: string,
+        expiresAt: Date,
+        refreshTokenExpiresAt?: Date
+    ): void {
+        this.authManager.restoreTokens(accessToken, refreshToken, expiresAt, refreshTokenExpiresAt);
     }
 
     /**
