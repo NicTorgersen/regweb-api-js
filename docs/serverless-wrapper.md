@@ -23,17 +23,6 @@ A lightweight, secure proxy that keeps OAuth credentials server-side while expos
 - **Performance**: Edge deployment = low latency globally
 - **Cost**: Cloudflare Workers free tier = 100k requests/day
 
-## Deployment Options
-
-| Platform | Free Tier | Cold Start | Best For |
-|----------|-----------|------------|----------|
-| **Cloudflare Workers** | 100k req/day | ~0ms | Best overall |
-| Vercel Edge Functions | 100k req/month | ~0ms | If already on Vercel |
-| Deno Deploy | 100k req/day | ~0ms | Deno projects |
-| AWS Lambda | 1M req/month | 100-500ms | AWS ecosystem |
-
-**Recommendation**: Cloudflare Workers - zero cold starts, global edge, generous free tier.
-
 ## Quick Start (Cloudflare Workers)
 
 ### 1. Install Wrangler CLI
